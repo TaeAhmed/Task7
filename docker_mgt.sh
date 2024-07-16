@@ -70,13 +70,18 @@ while true; do
       ;;
     5)
       echo "Enter container name or hash(id) to stop:"
-      read name
-      docker stop $name
+      read container
+      docker stop $container
       ;;
     6)
       echo "Enter container name or hash(id) to remove:"
-      read name
-      docker rm $name
+      read container
+      # Check if container is running
+      if docker ps -q -f name="$container" >/dev/null 2>&1; then
+        echo "Warning: Container is running. Stopping it first is recommended."
+        continue
+      fi
+      docker rm $container
       ;;
     7)
       echo "Enter image name or hash(id) to remove:"
