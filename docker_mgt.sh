@@ -69,17 +69,17 @@ while true; do
       $docker_cmd
       ;;
     5)
-      echo "Enter container name to stop:"
+      echo "Enter container name or hash(id) to stop:"
       read name
       docker stop $name
       ;;
     6)
-      echo "Enter container name to remove:"
+      echo "Enter container name or hash(id) to remove:"
       read name
       docker rm $name
       ;;
     7)
-      echo "Enter image name to remove:"
+      echo "Enter image name or hash(id) to remove:"
       read image
       docker rmi $image
       ;;
