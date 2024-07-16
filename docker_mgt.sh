@@ -39,16 +39,35 @@ while true; do
     4)
       echo "Enter image name:"
       read image
+      # Validate image existence
+      if ! docker image inspect $image >/dev/null 2>&1; then
+        echo "Error: Image does not exist locally."
+        continue
+      fi
+
       echo "Enter tag (optional):"
       read tag
       if [[ -z "$tag" ]]; then
         tag="latest"
       fi
-      echo "Enter container name:"
+
+      echo "Enter container name (optional):"
       read name
-      echo "Enter ports (format: host_port:container_port):"
+      echo "Enter ports (format: host_port:container_port) (optional):"
       read ports
-      docker run -d --name $name -p $ports $image:$tag
+
+      # Build the docker run command with optional arguments
+      docker_cmd="docker run -d"
+      if [[ ! -z "$name" ]]; then
+        docker_cmd="$docker_cmd --name $name"
+      fi
+      if [[ ! -z "$ports" ]]; then
+        docker_cmd="$docker_cmd -p $ports"
+      fi
+      docker_cmd="$docker_cmd $image:$tag"
+
+      # Execute the docker run command
+      $docker_cmd
       ;;
     5)
       echo "Enter container name to stop:"
