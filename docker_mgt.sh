@@ -37,20 +37,16 @@ while true; do
       docker images
       ;;
     4)
-      echo "Enter image name:"
+      echo "Enter image name or hash(id) or digest:"
       read image
       # Validate image existence
       if ! docker image inspect $image >/dev/null 2>&1; then
-        echo "Error: Image does not exist locally."
+        echo "Error: Invalid or Image does not exist locally."
         continue
       fi
 
       echo "Enter tag (optional):"
       read tag
-      if [[ -z "$tag" ]]; then
-        tag="latest"
-      fi
-
       echo "Enter container name (optional):"
       read name
       echo "Enter ports (format: host_port:container_port) (optional):"
@@ -64,7 +60,10 @@ while true; do
       if [[ ! -z "$ports" ]]; then
         docker_cmd="$docker_cmd -p $ports"
       fi
-      docker_cmd="$docker_cmd $image:$tag"
+      if [[ ! -z "$tag" ]]; then
+        docker_cmd="$docker_cmd $image:$tag"
+      fi
+      docker_cmd="$docker_cmd $image"
 
       # Execute the docker run command
       $docker_cmd
